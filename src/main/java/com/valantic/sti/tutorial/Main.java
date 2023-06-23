@@ -53,6 +53,9 @@ public class Main extends Application {
         layout.setPadding(new Insets(10, 10, 10, 10));
         layout.setVgap(10);
         layout.setHgap(5);
+//        final ColumnConstraints column = new ColumnConstraints();
+//        column.setPercentWidth(100 / 3);
+//        layout.getColumnConstraints().addAll(column, column, column);
 
         final Scene scene = new Scene(layout, 300, 250);
         window.setScene(scene);
