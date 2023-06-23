@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -36,8 +37,12 @@ public class Main extends Application {
         button2.setOnAction(e -> buildWindow("ChoiceBox (Drop-Down)", 300, 150, this::buildChoiceBox));
         GridPane.setConstraints(button2, 1, 0);
 
+        final Button button3 = new Button("ComboBox");
+        button3.setOnAction(e -> buildWindow("ComboBox", 250, 150, this::buildComboBox));
+        GridPane.setConstraints(button3, 2, 0);
+
         final GridPane layout = new GridPane();
-        layout.getChildren().addAll(button1, button2);
+        layout.getChildren().addAll(button1, button2, button3);
         layout.setPadding(new Insets(10, 10, 10, 10));
         layout.setVgap(5);
         layout.setHgap(5);
@@ -70,7 +75,7 @@ public class Main extends Application {
 
         final Button button = new Button("Order Now!");
         button.setOnAction(e -> {
-            String message = "Selected:";
+            String message = "button:";
             if (box1.isSelected()) {
                 message += " Bacon";
             }
@@ -95,14 +100,28 @@ public class Main extends Application {
         final Button button = new Button("Click me");
         button.setOnAction(e -> {
             final String food = choiceBox.getValue();
-            log.info("Selected: {}", food);
+            log.info("button: {}", food);
         });
 
         // add selection listener
         choiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (property, oldValue, newValue) -> log.info("Selected: old value '{}', new value '{}'", oldValue, newValue)
+                (property, oldValue, newValue) -> log.info("selected: old value '{}', new value '{}'", oldValue, newValue)
         );
 
         return List.of(choiceBox, button);
+    }
+
+    private List<Node> buildComboBox() {
+        final ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll("Good Will Hunting", "St. Vincent", "Blackhat");
+        comboBox.setPromptText("What is your favorite movie?");
+        comboBox.setOnAction(e -> log.info("selected: {}", comboBox.getValue()));
+
+        // comboBox.setEditable(true); // allows adding additional items
+
+        final Button button = new Button("Submit");
+        button.setOnAction(e -> log.info("button: '{}'", comboBox.getValue()));
+
+        return List.of(comboBox, button);
     }
 }
