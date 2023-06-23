@@ -90,13 +90,18 @@ public class Main extends Application {
         choiceBox.getItems().add("Bananas");
         choiceBox.getItems().addAll("Bacon", "Ham", "Meatballs");
 
-        choiceBox.setValue("Apples");
+        choiceBox.setValue("Apples"); // pre-defined value
 
         final Button button = new Button("Click me");
         button.setOnAction(e -> {
             final String food = choiceBox.getValue();
             log.info("Selected: {}", food);
         });
+
+        // add selection listener
+        choiceBox.getSelectionModel().selectedItemProperty().addListener(
+                (property, oldValue, newValue) -> log.info("Selected: old value '{}', new value '{}'", oldValue, newValue)
+        );
 
         return List.of(choiceBox, button);
     }
