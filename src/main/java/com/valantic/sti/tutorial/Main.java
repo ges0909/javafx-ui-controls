@@ -1,6 +1,7 @@
 package com.valantic.sti.tutorial;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -8,6 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -41,10 +44,14 @@ public class Main extends Application {
         button3.setOnAction(e -> buildWindow("ComboBox", 250, 150, this::buildComboBox));
         GridPane.setConstraints(button3, 2, 0);
 
+        final Button button4 = new Button("ListView");
+        button4.setOnAction(e -> buildWindow("ListView", 250, 200, this::buildListView));
+        GridPane.setConstraints(button4, 0, 1);
+
         final GridPane layout = new GridPane();
-        layout.getChildren().addAll(button1, button2, button3);
+        layout.getChildren().addAll(button1, button2, button3, button4);
         layout.setPadding(new Insets(10, 10, 10, 10));
-        layout.setVgap(5);
+        layout.setVgap(10);
         layout.setHgap(5);
 
         final Scene scene = new Scene(layout, 300, 250);
@@ -53,7 +60,7 @@ public class Main extends Application {
         window.show();
     }
 
-    private void buildWindow(final String title, final double width, final double height, final Supplier<List<Node>> supplier) {
+    private Stage buildWindow(final String title, final double width, final double height, final Supplier<List<Node>> supplier) {
         final List<Node> content = supplier.get();
 
         final VBox layout = new VBox(10);
@@ -66,11 +73,14 @@ public class Main extends Application {
         win.setTitle(title);
         win.setScene(scene);
         win.show();
+
+        return win;
     }
 
     private List<Node> buildCheckBox() {
         final CheckBox box1 = new CheckBox("Bacon");
         final CheckBox box2 = new CheckBox("Tuna");
+
         box2.setSelected(true);
 
         final Button button = new Button("Order Now!");
@@ -113,6 +123,7 @@ public class Main extends Application {
 
     private List<Node> buildComboBox() {
         final ComboBox<String> comboBox = new ComboBox<>();
+
         comboBox.getItems().addAll("Good Will Hunting", "St. Vincent", "Blackhat");
         comboBox.setPromptText("What is your favorite movie?");
         comboBox.setOnAction(e -> log.info("selected: {}", comboBox.getValue()));
@@ -124,4 +135,20 @@ public class Main extends Application {
 
         return List.of(comboBox, button);
     }
+
+    private List<Node> buildListView() {
+        final ListView<String> listView = new ListView<>();
+
+        listView.getItems().addAll("Iron Man", "Titanic", "Contact", "Surrogates"); // may create scrollbar
+        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // allows multiple item selection
+
+        final Button button = new Button("Submit");
+        button.setOnAction(e -> {
+            final ObservableList<String> items = listView.getSelectionModel().getSelectedItems();
+            log.info("button: '{}'", String.join(", ", items));
+        });
+
+        return List.of(listView, button);
+    }
+
 }
