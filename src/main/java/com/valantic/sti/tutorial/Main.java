@@ -1,6 +1,7 @@
 package com.valantic.sti.tutorial;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -11,9 +12,14 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
@@ -52,11 +58,15 @@ public class Main extends Application {
         GridPane.setConstraints(button4, 0, 1);
 
         final Button button5 = new Button("TreeView");
-        button5.setOnAction(e -> buildWindow("TreeView", 250, 200, this::buildTreeView));
+        button5.setOnAction(e -> buildWindow("TreeView", 250, 300, this::buildTreeView));
         GridPane.setConstraints(button5, 1, 1);
 
+        final Button button6 = new Button("TableView");
+        button6.setOnAction(e -> buildWindow("TableView", 650, 300, this::buildTableView));
+        GridPane.setConstraints(button6, 2, 1);
+
         final GridPane layout = new GridPane();
-        layout.getChildren().addAll(button1, button2, button3, button4, button5);
+        layout.getChildren().addAll(button1, button2, button3, button4, button5, button6);
         layout.setPadding(new Insets(10, 10, 10, 10));
         layout.setVgap(10);
         layout.setHgap(5);
@@ -80,12 +90,14 @@ public class Main extends Application {
 
         final Scene scene = new Scene(layout, width, height);
 
-        final Stage win = new Stage();
-        win.setTitle(title);
-        win.setScene(scene);
-        win.show();
+        final Stage popupWindow = new Stage();
+        popupWindow.setTitle(title);
+        popupWindow.setScene(scene);
+        popupWindow.setX(window.getX() + window.getX() * 0.1);
+        popupWindow.setY(window.getY() + window.getY() * 0.2);
+        popupWindow.show();
 
-        return win;
+        return popupWindow;
     }
 
     private List<Node> buildCheckBox() {
@@ -133,7 +145,7 @@ public class Main extends Application {
     private List<Node> buildComboBox() {
         final ComboBox<String> comboBox = new ComboBox<>();
 
-        comboBox.getItems().addAll("Good Will Hunting", "St. Vincent", "Blackhat");
+        comboBox.getItems().addAll("Good Will Hunting", "St. Vincent", "Pretty Woman");
         comboBox.setPromptText("What is your favorite movie?");
         comboBox.setOnAction(e -> log.info("selected: {}", comboBox.getValue()));
 
@@ -187,5 +199,69 @@ public class Main extends Application {
         });
 
         return List.of(treeView);
+    }
+
+    private List<Node> buildTableView() {
+        final ObservableList<Product> products = FXCollections.observableArrayList();
+        products.add(new Product("Laptop", 859.00, 20));
+        products.add(new Product("Bouncy Ball", 2.49, 198));
+        products.add(new Product("Toilet", 99.00, 74));
+        products.add(new Product("The Notebook DVD", 19.99, 12));
+        products.add(new Product("Corn", 1.49, 856));
+
+        // at least one column is required
+        final TableColumn<Product, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setMaxWidth(200);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name")); // has to be a property name
+
+        final TableColumn<Product, String> priceColumn = new TableColumn<>("Price");
+        priceColumn.setMaxWidth(200);
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        final TableColumn<Product, String> quantityColumn = new TableColumn<>("Quantity");
+        quantityColumn.setMaxWidth(200);
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+
+        final TableView<Product> table = new TableView<>();
+        table.getColumns().add(nameColumn);
+        table.getColumns().add(priceColumn);
+        table.getColumns().add(quantityColumn);
+        table.setItems(products);
+
+        final TextField nameTextField = new TextField();
+        nameTextField.setPromptText("Name");
+        nameTextField.setMinWidth(100);
+
+        final TextField priceTextField = new TextField();
+        priceTextField.setPromptText("Price");
+
+        final TextField quantityTextField = new TextField();
+        quantityTextField.setPromptText("Quantity");
+
+        final Button addButton = new Button("Add");
+        addButton.setOnAction(e -> {
+            final Product product = new Product();
+            product.setName(nameTextField.getText());
+            product.setPrice(Double.parseDouble(priceTextField.getText()));
+            product.setQuantity(Integer.parseInt(quantityTextField.getText()));
+            table.getItems().add(product);
+            nameTextField.clear();
+            priceTextField.clear();
+            quantityTextField.clear();
+        });
+
+        final Button deleteButton = new Button("Delete");
+        deleteButton.setOnAction(e -> {
+            final ObservableList<Product> allProducts = table.getItems();
+            final ObservableList<Product> selectedProducts = table.getSelectionModel().getSelectedItems();
+            selectedProducts.forEach(allProducts::remove);
+        });
+
+        final HBox hbox = new HBox();
+        hbox.setPadding(new Insets(10, 10, 10, 10));
+        hbox.setSpacing(10);
+        hbox.getChildren().addAll(nameTextField, priceTextField, quantityTextField, addButton, deleteButton);
+
+        return List.of(table, hbox);
     }
 }
