@@ -11,12 +11,15 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -48,11 +51,16 @@ public class Main extends Application {
         button4.setOnAction(e -> buildWindow("ListView", 250, 200, this::buildListView));
         GridPane.setConstraints(button4, 0, 1);
 
+        final Button button5 = new Button("TreeView");
+        button5.setOnAction(e -> buildWindow("TreeView", 250, 200, this::buildTreeView));
+        GridPane.setConstraints(button5, 1, 1);
+
         final GridPane layout = new GridPane();
-        layout.getChildren().addAll(button1, button2, button3, button4);
+        layout.getChildren().addAll(button1, button2, button3, button4, button5);
         layout.setPadding(new Insets(10, 10, 10, 10));
         layout.setVgap(10);
         layout.setHgap(5);
+
 //        final ColumnConstraints column = new ColumnConstraints();
 //        column.setPercentWidth(100 / 3);
 //        layout.getColumnConstraints().addAll(column, column, column);
@@ -117,9 +125,7 @@ public class Main extends Application {
         });
 
         // add selection listener
-        choiceBox.getSelectionModel().selectedItemProperty().addListener(
-                (property, oldValue, newValue) -> log.info("selected: old value '{}', new value '{}'", oldValue, newValue)
-        );
+        choiceBox.getSelectionModel().selectedItemProperty().addListener((property, oldValue, newValue) -> log.info("selected: old value '{}', new value '{}'", oldValue, newValue));
 
         return List.of(choiceBox, button);
     }
@@ -154,4 +160,32 @@ public class Main extends Application {
         return List.of(listView, button);
     }
 
+    private List<Node> buildTreeView() {
+        final TreeItem<String> top = new TreeItem<>("Top of the Pop");
+        top.setExpanded(true);
+
+        final TreeItem<String> branch1 = new TreeItem<>("Branch One");
+        branch1.setExpanded(true);
+        branch1.getChildren().add(new TreeItem<>("Eins"));
+        branch1.getChildren().add(new TreeItem<>("One"));
+        branch1.getChildren().add(new TreeItem<>("Uno"));
+
+        final TreeItem<String> branch2 = new TreeItem<>("Branch Two");
+        branch2.setExpanded(true);
+        branch2.getChildren().add(new TreeItem<>("Zwei"));
+        branch2.getChildren().add(new TreeItem<>("Due"));
+
+        top.getChildren().add(branch1);
+        top.getChildren().add(branch2);
+
+        final TreeView<String> treeView = new TreeView<>(top);
+        treeView.setShowRoot(false);
+        treeView.getSelectionModel().selectedItemProperty().addListener((item, oldValue, newValue) -> {
+            if (Objects.nonNull(newValue)) {
+                log.info("selected '{}'", newValue.getValue());
+            }
+        });
+
+        return List.of(treeView);
+    }
 }
