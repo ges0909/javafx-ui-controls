@@ -240,10 +240,11 @@ public class Main extends Application {
 
         final Button addButton = new Button("Add");
         addButton.setOnAction(e -> {
-            final Product product = new Product();
-            product.setName(nameTextField.getText());
-            product.setPrice(Double.parseDouble(priceTextField.getText()));
-            product.setQuantity(Integer.parseInt(quantityTextField.getText()));
+            final Product product = new Product( //
+                    nameTextField.getText(), //
+                    Double.parseDouble(priceTextField.getText()), //
+                    Integer.parseInt(quantityTextField.getText()) //
+            );
             table.getItems().add(product);
             nameTextField.clear();
             priceTextField.clear();
