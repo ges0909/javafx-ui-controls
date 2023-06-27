@@ -6,17 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -26,15 +16,22 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
 @Slf4j
 public class Main extends Application {
 
     private Stage window;
+    private ResourceBundle bundle;
 
     public static void main(final String... args) {
         launch(args);
+    }
+
+    @Override
+    public void init() {
+        bundle = ResourceBundle.getBundle("choicebox_labels");
     }
 
     @Override
@@ -122,13 +119,31 @@ public class Main extends Application {
     }
 
     private List<Node> buildChoiceBox() {
-        final ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        final Label label = new Label("Make a Choice:");
 
-        choiceBox.getItems().add("Apples");
-        choiceBox.getItems().add("Bananas");
-        choiceBox.getItems().addAll("Bacon", "Ham", "Meatballs");
+        // approach #1
+        // final ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        // choiceBox.getItems().add("Apples");
+        // choiceBox.getItems().add("Bananas");
+        // choiceBox.getItems().addAll("Bacon", "Ham", "Meatballs");
 
-        choiceBox.setValue("Apples"); // pre-defined value
+        // approach #2
+        // final ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        // choiceBox.setItems(FXCollections.observableArrayList("Apples", "Bananas", "Bacon", "Ham", "Ham"));
+
+        // approach #3
+        // final ChoiceBox<String> choiceBox = new ChoiceBox<>(
+        //        FXCollections.observableArrayList("Apples", "Bananas", "Bacon", "Ham", "Meatballs"));
+        final ChoiceBox<String> choiceBox = new ChoiceBox<>(
+                FXCollections.observableArrayList(
+                        bundle.getString("checkbox.item1.text"),
+                        bundle.getString("checkbox.item2.text"),
+                        bundle.getString("checkbox.item3.text"),
+                        bundle.getString("checkbox.item4.text"),
+                        bundle.getString("checkbox.item5.text")
+                ));
+
+        choiceBox.setValue(bundle.getString("checkbox.item1.text")); // pre-defined value
 
         final Button button = new Button("Click me");
         button.setOnAction(e -> {
@@ -139,7 +154,7 @@ public class Main extends Application {
         // add selection listener
         choiceBox.getSelectionModel().selectedItemProperty().addListener((property, oldValue, newValue) -> log.info("selected: old value '{}', new value '{}'", oldValue, newValue));
 
-        return List.of(choiceBox, button);
+        return List.of(label, choiceBox, button);
     }
 
     private List<Node> buildComboBox() {
