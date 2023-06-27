@@ -27,3 +27,10 @@
 - [JavaFX Java GUI Tutorial - 18 - Simple TableView](https://yewtu.be/watch?v=mtdlX2NMy4M&list=PL6gx4Cwl9DGBzfXLWLSYVy8EbTdpGbUIG&index=17&autoplay=1)
 - [JavaFX Java GUI Tutorial - 19 - Editable Tables](https://yewtu.be/watch?v=q1LEN2assfU&list=PL6gx4Cwl9DGBzfXLWLSYVy8EbTdpGbUIG&index=18&autoplay=1)
 - [JavaFX Java GUI Tutorial - 20 - Adding and Deleting TableView Rows](https://yewtu.be/watch?v=uz2sWCnTq6E&list=PL6gx4Cwl9DGBzfXLWLSYVy8EbTdpGbUIG&index=19&autoplay=1)
+
+## Menu
+
+- [JavaFX Java GUI Tutorial - 21 - Making Menus](https://yewtu.be/watch?v=JBJ9MIEfU3k&list=PL6gx4Cwl9DGBzfXLWLSYVy8EbTdpGbUIG&index=20)
+- [JavaFX Java GUI Tutorial - 22 - Handling Menu Clicks](https://yewtu.be/watch?v=AP4e6Lxncp4&list=PL6gx4Cwl9DGBzfXLWLSYVy8EbTdpGbUIG&index=21&autoplay=1)
+- [JavaFX Java GUI Tutorial - 23 - CheckMenuItem](https://yewtu.be/watch?v=qZNqREHSrC0&list=PL6gx4Cwl9DGBzfXLWLSYVy8EbTdpGbUIG&index=22&autoplay=1)
+- [JavaFX Java GUI Tutorial - 24 - RadioMenuItem](https://yewtu.be/watch?v=VB_YnRteVAM&list=PL6gx4Cwl9DGBzfXLWLSYVy8EbTdpGbUIG&index=23&autoplay=1)

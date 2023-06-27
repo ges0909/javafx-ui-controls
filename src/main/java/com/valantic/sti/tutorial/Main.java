@@ -6,8 +6,27 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -23,7 +42,7 @@ import java.util.function.Supplier;
 public class Main extends Application {
 
     private Stage window;
-    private ResourceBundle bundle;
+    private ResourceBundle resourceBundle;
 
     public static void main(final String... args) {
         launch(args);
@@ -31,7 +50,7 @@ public class Main extends Application {
 
     @Override
     public void init() {
-        bundle = ResourceBundle.getBundle("choicebox_labels");
+        resourceBundle = ResourceBundle.getBundle("choicebox_labels");
     }
 
     @Override
@@ -62,8 +81,12 @@ public class Main extends Application {
         button6.setOnAction(e -> buildWindow("TableView", 650, 300, this::buildTableView));
         GridPane.setConstraints(button6, 2, 1);
 
+        final Button button7 = new Button("Menu");
+        button7.setOnAction(e -> buildWindow("Menu", 250, 150, this::buildMenu));
+        GridPane.setConstraints(button7, 0, 2);
+
         final GridPane layout = new GridPane();
-        layout.getChildren().addAll(button1, button2, button3, button4, button5, button6);
+        layout.getChildren().addAll(button1, button2, button3, button4, button5, button6, button7);
         layout.setPadding(new Insets(10, 10, 10, 10));
         layout.setVgap(10);
         layout.setHgap(5);
@@ -134,16 +157,16 @@ public class Main extends Application {
         // approach #3
         // final ChoiceBox<String> choiceBox = new ChoiceBox<>(
         //        FXCollections.observableArrayList("Apples", "Bananas", "Bacon", "Ham", "Meatballs"));
-        final ChoiceBox<String> choiceBox = new ChoiceBox<>(
-                FXCollections.observableArrayList(
-                        bundle.getString("checkbox.item1.text"),
-                        bundle.getString("checkbox.item2.text"),
-                        bundle.getString("checkbox.item3.text"),
-                        bundle.getString("checkbox.item4.text"),
-                        bundle.getString("checkbox.item5.text")
-                ));
+        final ChoiceBox<String> choiceBox = new ChoiceBox<>( //
+                FXCollections.observableArrayList( //
+                        resourceBundle.getString("checkbox.item1.text"), //
+                        resourceBundle.getString("checkbox.item2.text"), //
+                        resourceBundle.getString("checkbox.item3.text"), //
+                        resourceBundle.getString("checkbox.item4.text"), //
+                        resourceBundle.getString("checkbox.item5.text")) //
+        );
 
-        choiceBox.setValue(bundle.getString("checkbox.item1.text")); // pre-defined value
+        choiceBox.setValue(resourceBundle.getString("checkbox.item1.text")); // pre-selected value
 
         final Button button = new Button("Click me");
         button.setOnAction(e -> {
@@ -152,7 +175,8 @@ public class Main extends Application {
         });
 
         // add selection listener
-        choiceBox.getSelectionModel().selectedItemProperty().addListener((property, oldValue, newValue) -> log.info("selected: old value '{}', new value '{}'", oldValue, newValue));
+        choiceBox.getSelectionModel().selectedItemProperty().addListener( //
+                (property, oldValue, newValue) -> log.info("selected: old value '{}', new value '{}'", oldValue, newValue));
 
         return List.of(label, choiceBox, button);
     }
@@ -279,5 +303,57 @@ public class Main extends Application {
         hbox.getChildren().addAll(nameTextField, priceTextField, quantityTextField, addButton, deleteButton);
 
         return List.of(table, hbox);
+    }
+
+    private List<Node> buildMenu() {
+        final Menu fileMenu = new Menu("File");
+        final MenuItem newMenuItem = new MenuItem("New...");
+        newMenuItem.setOnAction(e -> log.info("Create a new file..."));
+        fileMenu.getItems().add(newMenuItem);
+        fileMenu.getItems().add(new MenuItem("Open..."));
+        fileMenu.getItems().add(new MenuItem("Save..."));
+        fileMenu.getItems().add(new SeparatorMenuItem());
+        fileMenu.getItems().add(new MenuItem("Settings..."));
+        fileMenu.getItems().add(new SeparatorMenuItem());
+        fileMenu.getItems().add(new MenuItem("Exit..."));
+
+        final Menu editMenu = new Menu("_Edit"); // '_' should add mnemonic
+        editMenu.getItems().add(new MenuItem("Cut"));
+        editMenu.getItems().add(new MenuItem("Copy"));
+        final MenuItem pasteMenuItem = new MenuItem("Paste");
+        pasteMenuItem.setOnAction(e -> log.info("Paste"));
+        pasteMenuItem.setDisable(true);
+        editMenu.getItems().add(pasteMenuItem);
+
+        final Menu helpMenu = new Menu("_Help");
+        final CheckMenuItem showLineNumbersCheckMenuItem = new CheckMenuItem("Show line numbers");
+        showLineNumbersCheckMenuItem.setOnAction(e -> {
+            if (showLineNumbersCheckMenuItem.isSelected()) {
+                log.info("Line numbers are shown");
+            } else {
+                log.info("Line numbers are hidden");
+            }
+        });
+        final CheckMenuItem autoSaveCheckMenuItem = new CheckMenuItem("Enable autosave");
+        autoSaveCheckMenuItem.setSelected(true);
+        helpMenu.getItems().addAll(showLineNumbersCheckMenuItem, autoSaveCheckMenuItem);
+
+        final Menu difficultyMenu = new Menu("Difficulty");
+        final ToggleGroup difficultyToggleGroup = new ToggleGroup();
+        final RadioMenuItem easy = new RadioMenuItem("Easy");
+        final RadioMenuItem medium = new RadioMenuItem("Medium");
+        final RadioMenuItem hard = new RadioMenuItem("Hard");
+        easy.setToggleGroup(difficultyToggleGroup);
+        medium.setToggleGroup(difficultyToggleGroup);
+        hard.setToggleGroup(difficultyToggleGroup);
+        difficultyMenu.getItems().addAll(easy, medium, hard);
+
+        final MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().addAll(fileMenu, editMenu, difficultyMenu, helpMenu);
+
+        final BorderPane borderPane = new BorderPane();
+        borderPane.setTop(menuBar);
+
+        return List.of(borderPane);
     }
 }
